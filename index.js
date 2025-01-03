@@ -17,7 +17,7 @@ app.post('/save-data', async (req, res) => {
         const {
             TERMINAL,
             TRTYPE,
-            ORDERR,  // Schimbăm ORDER cu ORDERR
+            ORDERR,  
             AMOUNT,
             CURRENCY,
             ACTION,
@@ -25,7 +25,7 @@ app.post('/save-data', async (req, res) => {
             APPROVAL,
             RRN,
             INT_REF,
-            TIMESTAMP,
+            TIMESTAMP,  // Adăugăm TIMESTAMP
             NONCE,
             P_SIGN,
             ECI
@@ -33,7 +33,7 @@ app.post('/save-data', async (req, res) => {
 
         const query = `
             INSERT INTO test_table2 (TERMINAL, TRTYPE, ORDERR, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI)
-            VALUES ($1, $2, $3, $4, $5, $6, $7 $8, $9, $10, $11, $12, $13, $14)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         `;
 
         const values = [
@@ -48,6 +48,7 @@ app.post('/save-data', async (req, res) => {
         res.status(500).json({ message: 'Eroare la salvarea datelor.', error });
     }
 });
+
 
 
 app.listen(PORT, () => {
