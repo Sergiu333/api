@@ -15,8 +15,8 @@ app.use(express.urlencoded({ extended: true })); // Permite trimiterea datelor p
 app.post('/save-data', async (req, res) => {
     const data = req.body;
 
-    if (Object.keys(data).length !== 14) {
-        return res.status(400).json({ message: 'Trebuie să trimiți exact 14 câmpuri.' });
+    if (Object.keys(data).length !== 13) {
+        return res.status(400).json({ message: 'Trebuie să trimiți exact 13 câmpuri.' });
     }
 
     try {
