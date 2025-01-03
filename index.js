@@ -9,20 +9,37 @@ const pool = new Pool({
 });
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Adăugat pentru formulare HTML
 
 app.post('/save-data', async (req, res) => {
-    const data = req.body;
-
-    if (Object.keys(data).length !== 14) {
-        return res.status(400).json({ message: 'Trebuie să trimiți exact 14 câmpuri.' });
-    }
-
     try {
+        // Extragem câmpurile din cererea primită
+        const {
+            test,
+            field2,
+            field3,
+            field4,
+            field5,
+            field6,
+            field7,
+            field8,
+            field9,
+            field10,
+            field11,
+            field12,
+            field13,
+            field14
+        } = req.body;
+
         const query = `
             INSERT INTO my_table (field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13, field14)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         `;
-        const values = Object.values(data);
+
+        const values = [
+            test, field2, field3, field4, field5, field6, field7, 
+            field8, field9, field10, field11, field12, field13, field14
+        ];
 
         await pool.query(query, values);
         res.status(201).json({ message: 'Datele au fost salvate cu succes.' });
