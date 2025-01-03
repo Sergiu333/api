@@ -9,40 +9,43 @@ const pool = new Pool({
 });
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Permite trimiterea datelor prin formular URL-encoded
+app.use(express.urlencoded({ extended: true })); // Adăugat pentru formulare HTML
 
-// Endpoint pentru salvarea datelor
 app.post('/save-data', async (req, res) => {
-    const data = req.body;
-
-    if (Object.keys(data).length !== 13) {
-        return res.status(400).json({ message: 'Trebuie să trimiți exact 13 câmpuri.' });
-    }
-
     try {
-        const query = `
-    INSERT INTO my_table2 (TERMINAL, TRTYPE, ORDERR, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, NONCE, P_SIGN, ECI)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-`;
+        // Extragem câmpurile din cererea primită
+        const {
+            test,
+            field2,
+            field3,
+            field4,
+            field5,
+            field6,
+            field7,
+            field8,
+            field9,
+            field10,
+            field11,
+            field12,
+            field13,
+            field14
+        } = req.body;
 
-        const values = Object.values(data);
+        const query = `
+            INSERT INTO my_table (field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13, field14)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        `;
+
+        const values = [
+            test, field2, field3, field4, field5, field6, field7, 
+            field8, field9, field10, field11, field12, field13, field14
+        ];
 
         await pool.query(query, values);
         res.status(201).json({ message: 'Datele au fost salvate cu succes.' });
     } catch (error) {
         console.error('Eroare la salvarea datelor:', error);
         res.status(500).json({ message: 'Eroare la salvarea datelor.', error });
-    }
-});
-
-// Endpoint pentru citirea datelor
-app.get('/get-data', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM my_table2');
-        res.status(200).json(result.rows);
-    } catch (error) {
-        console.error('Eroare la citirea datelor:', error);
-        res.status(500).json({ message: 'Eroare la citirea datelor.', error });
     }
 });
 
