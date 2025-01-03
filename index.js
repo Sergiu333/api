@@ -54,3 +54,24 @@ app.post('/save-data', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
 });
+
+
+// SELECT * FROM test_table2 
+
+// CREATE TABLE test_table2 (
+//     TERMINAL TEXT,
+//     TRTYPE TEXT,
+//     ORDERR TEXT,  
+//     AMOUNT TEXT,
+//     CURRENCY TEXT,
+//     ACTION TEXT,
+//     RC TEXT,
+//     APPROVAL TEXT,
+//     RRN TEXT,
+//     INT_REF TEXT,
+//     TIMESTAMP TEXT,
+//     NONCE TEXT,
+//     P_SIGN TEXT,
+//     ECI TEXT
+// );
+
