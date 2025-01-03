@@ -8,6 +8,7 @@ const pool = new Pool({
     connectionString: 'postgres://default:3oh5IOzwQqtJ@ep-throbbing-sunset-54063867.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require',
 });
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Adăugat pentru formulare HTML
 
