@@ -9,6 +9,7 @@ const pool = new Pool({
 });
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Permite trimiterea datelor prin formular URL-encoded
 
 // Endpoint pentru salvarea datelor
 app.post('/save-data', async (req, res) => {
