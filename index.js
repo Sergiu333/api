@@ -107,23 +107,23 @@ app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
 });
 
- CREATE TABLE transaction ( 
-     TERMINAL TEXT,
-     TRTYPE TEXT,
-     "ORDER" TEXT,  
-     AMOUNT TEXT,
-     CURRENCY TEXT,
-     ACTION TEXT,
-     RC TEXT,
-     APPROVAL TEXT,
-     RRN TEXT,
-     INT_REF TEXT,
-     TIMESTAMP TEXT,
-     NONCE TEXT,
-     P_SIGN TEXT,
-     ECI TEXT,
-     TEXT TEXT
- );
+ // CREATE TABLE transaction ( 
+ //     TERMINAL TEXT,
+ //     TRTYPE TEXT,
+ //     "ORDER" TEXT,  
+ //     AMOUNT TEXT,
+ //     CURRENCY TEXT,
+ //     ACTION TEXT,
+ //     RC TEXT,
+ //     APPROVAL TEXT,
+ //     RRN TEXT,
+ //     INT_REF TEXT,
+ //     TIMESTAMP TEXT,
+ //     NONCE TEXT,
+ //     P_SIGN TEXT,
+ //     ECI TEXT,
+ //     TEXT TEXT
+ // );
 
 
 
