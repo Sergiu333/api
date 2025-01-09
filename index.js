@@ -55,41 +55,22 @@ app.listen(PORT, () => {
 
 
 
-// SELECT * FROM test_table2 
-
-// CREATE TABLE test_table2 (
-//     TERMINAL TEXT,
-//     TRTYPE TEXT,
-//     ORDERR TEXT,  
-//     AMOUNT TEXT,
-//     CURRENCY TEXT,
-//     ACTION TEXT,
-//     RC TEXT,
-//     APPROVAL TEXT,
-//     RRN TEXT,
-//     INT_REF TEXT,
-//     TIMESTAMP TEXT,
-//     NONCE TEXT,
-//     P_SIGN TEXT,
-//     ECI TEXT
-// );
-
-// CREATE TABLE test_table3 ( 
-//     TERMINAL TEXT,
-//     TRTYPE TEXT,
-//     "ORDER" TEXT,  
-//     AMOUNT TEXT,
-//     CURRENCY TEXT,
-//     ACTION TEXT,
-//     RC TEXT,
-//     APPROVAL TEXT,
-//     RRN TEXT,
-//     INT_REF TEXT,
-//     TIMESTAMP TEXT,
-//     NONCE TEXT,
-//     P_SIGN TEXT,
-//     ECI TEXT
-// );
+ // CREATE TABLE test_table4 ( 
+ //     TERMINAL TEXT,
+ //     TRTYPE TEXT,
+ //     "ORDER" TEXT,  
+ //     AMOUNT TEXT,
+ //     CURRENCY TEXT,
+ //     ACTION TEXT,
+ //     RC TEXT,
+ //     APPROVAL TEXT,
+ //     RRN TEXT,
+ //     INT_REF TEXT,
+ //     TIMESTAMP TEXT,
+ //     NONCE TEXT,
+ //     P_SIGN TEXT,
+ //     ECI TEXT
+ // );
 
 
 
