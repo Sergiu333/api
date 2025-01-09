@@ -60,10 +60,7 @@ app.get('/get-data', async (req, res) => {
         res.status(500).json({ message: 'Eroare la obținerea datelor.', error });
     }
 });
-
-
-
-
+ 
 
 app.post('/finalize-record', async (req, res) => {
     try {
@@ -87,9 +84,9 @@ app.post('/finalize-record', async (req, res) => {
 app.get('/get-pending-records', async (req, res) => {
     try {
         const query = `
-            SELECT * FROM test_table4 t1
+            SELECT * FROM transaction t1
             WHERE t1.RC = '00' AND NOT EXISTS (
-                SELECT 1 FROM test_table4 t2
+                SELECT 1 FROM transaction t2
                 WHERE t2.RRN = t1.RRN AND t2.TRTYPE = '21'
             )
         `;
