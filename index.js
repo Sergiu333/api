@@ -50,6 +50,17 @@ app.post('/save-data', async (req, res) => {
     }
 });
 
+
+app.get('/get-data', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM test_table4');
+        res.status(200).json(result.rows); 
+    } catch (error) {
+        console.error('Eroare la obținerea datelor:', error);
+        res.status(500).json({ message: 'Eroare la obținerea datelor.', error });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
 });
