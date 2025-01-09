@@ -66,15 +66,25 @@ app.post('/finalize-record', async (req, res) => {
     try {
         const { TERMINAL, ORDER, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT } = req.body;
 
-        const query = `
+        // Verificăm dacă tranzacția este deja finalizată
+        const checkQuery = `
+            SELECT 1 FROM transaction WHERE RRN = $1 AND TRTYPE = '21'
+        `;
+        const checkResult = await pool.query(checkQuery, [RRN]);
+
+        if (checkResult.rowCount > 0) {
+            return res.status(400).json({ message: 'Tranzacția este deja finalizată.' });
+        }
+
+        const insertQuery = `
             INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
             VALUES ($1, '21', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         `;
 
         const values = [TERMINAL, ORDER, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT];
+        await pool.query(insertQuery, values);
 
-        await pool.query(query, values);
-        res.status(200).json({ message: 'Inregistrarea a fost finalizata cu succes.' });
+        res.status(200).json({ message: 'Înregistrarea a fost finalizată cu succes.' });
     } catch (error) {
         console.error('Eroare la finalizarea înregistrării:', error);
         res.status(500).json({ message: 'Eroare la finalizarea înregistrării.', error });
@@ -86,20 +96,31 @@ app.post('/cancel-record', async (req, res) => {
     try {
         const { TERMINAL, ORDER, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT } = req.body;
 
-        const query = `
+        // Verificăm dacă tranzacția este deja anulată
+        const checkQuery = `
+            SELECT 1 FROM transaction WHERE RRN = $1 AND TRTYPE = '22'
+        `;
+        const checkResult = await pool.query(checkQuery, [RRN]);
+
+        if (checkResult.rowCount > 0) {
+            return res.status(400).json({ message: 'Tranzacția este deja anulată.' });
+        }
+
+        const insertQuery = `
             INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
             VALUES ($1, '22', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         `;
 
         const values = [TERMINAL, ORDER, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT];
+        await pool.query(insertQuery, values);
 
-        await pool.query(query, values);
-        res.status(200).json({ message: 'Inregistrarea a fost finalizata cu succes.' });
+        res.status(200).json({ message: 'Înregistrarea a fost anulată cu succes.' });
     } catch (error) {
-        console.error('Eroare la finalizarea înregistrării:', error);
-        res.status(500).json({ message: 'Eroare la finalizarea înregistrării.', error });
+        console.error('Eroare la anularea înregistrării:', error);
+        res.status(500).json({ message: 'Eroare la anularea înregistrării.', error });
     }
 });
+
 
 app.get('/get-pending-records', async (req, res) => {
     try {
