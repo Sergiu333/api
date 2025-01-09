@@ -124,7 +124,6 @@ app.get('/get-active-records', async (req, res) => {
     try {
         const query = `
            select * from transaction where rc = '00'
-            )
         `;
 
         const result = await pool.query(query);
