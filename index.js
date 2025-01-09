@@ -81,6 +81,26 @@ app.post('/finalize-record', async (req, res) => {
     }
 });
 
+
+app.post('/cancel-record', async (req, res) => {
+    try {
+        const { TERMINAL, ORDER, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT } = req.body;
+
+        const query = `
+            INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
+            VALUES ($1, '22', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        `;
+
+        const values = [TERMINAL, ORDER, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT];
+
+        await pool.query(query, values);
+        res.status(200).json({ message: 'Inregistrarea a fost finalizata cu succes.' });
+    } catch (error) {
+        console.error('Eroare la finalizarea înregistrării:', error);
+        res.status(500).json({ message: 'Eroare la finalizarea înregistrării.', error });
+    }
+});
+
 app.get('/get-pending-records', async (req, res) => {
     try {
         const query = `
