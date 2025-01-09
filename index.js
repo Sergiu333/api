@@ -17,7 +17,7 @@ app.post('/save-data', async (req, res) => {
         const {
             TERMINAL,
             TRTYPE,
-            ORDERR,  
+            ORDER,  
             AMOUNT,
             CURRENCY,
             ACTION,
@@ -38,7 +38,7 @@ app.post('/save-data', async (req, res) => {
 
 
         const values = [
-            TERMINAL, TRTYPE, ORDERR, AMOUNT, CURRENCY, ACTION, RC, 
+            TERMINAL, TRTYPE, ORDER, AMOUNT, CURRENCY, ACTION, RC, 
             APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI
         ];
 
