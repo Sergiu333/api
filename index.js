@@ -33,7 +33,7 @@ app.post('/save-data', async (req, res) => {
         } = req.body;
 
         const query = `
-            INSERT INTO test_table4 (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
+            INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         `;
 
@@ -53,7 +53,7 @@ app.post('/save-data', async (req, res) => {
 
 app.get('/get-data', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM test_table4');
+        const result = await pool.query('SELECT * FROM transaction');
         res.status(200).json(result.rows); 
     } catch (error) {
         console.error('Eroare la obținerea datelor:', error);
@@ -70,7 +70,7 @@ app.post('/finalize-record', async (req, res) => {
         const { TERMINAL, ORDER, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT } = req.body;
 
         const query = `
-            INSERT INTO test_table4 (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
+            INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
             VALUES ($1, '21', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         `;
 
@@ -107,22 +107,23 @@ app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
 });
 
- // CREATE TABLE test_table4 ( 
- //     TERMINAL TEXT,
- //     TRTYPE TEXT,
- //     "ORDER" TEXT,  
- //     AMOUNT TEXT,
- //     CURRENCY TEXT,
- //     ACTION TEXT,
- //     RC TEXT,
- //     APPROVAL TEXT,
- //     RRN TEXT,
- //     INT_REF TEXT,
- //     TIMESTAMP TEXT,
- //     NONCE TEXT,
- //     P_SIGN TEXT,
- //     ECI TEXT
- // );
+ CREATE TABLE transaction ( 
+     TERMINAL TEXT,
+     TRTYPE TEXT,
+     "ORDER" TEXT,  
+     AMOUNT TEXT,
+     CURRENCY TEXT,
+     ACTION TEXT,
+     RC TEXT,
+     APPROVAL TEXT,
+     RRN TEXT,
+     INT_REF TEXT,
+     TIMESTAMP TEXT,
+     NONCE TEXT,
+     P_SIGN TEXT,
+     ECI TEXT,
+     TEXT TEXT
+ );
 
 
 
