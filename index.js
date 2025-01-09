@@ -32,9 +32,10 @@ app.post('/save-data', async (req, res) => {
         } = req.body;
 
         const query = `
-            INSERT INTO test_table3 (TERMINAL, TRTYPE, ORDERR, AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-        `;
+    INSERT INTO test_table3 (TERMINAL, TRTYPE, "order", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+`;
+
 
         const values = [
             TERMINAL, TRTYPE, ORDERR, AMOUNT, CURRENCY, ACTION, RC, 
