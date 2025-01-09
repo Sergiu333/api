@@ -100,6 +100,22 @@ app.get('/get-pending-records', async (req, res) => {
 });
 
 
+app.get('/get-active-records', async (req, res) => {
+    try {
+        const query = `
+           select * from transaction where rc = '00'
+            )
+        `;
+
+        const result = await pool.query(query);
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Eroare la obținerea înregistrărilor:', error);
+        res.status(500).json({ message: 'Eroare la obținerea înregistrărilor.', error });
+    }
+});
+
+
 app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
 });
