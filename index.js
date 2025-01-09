@@ -28,17 +28,18 @@ app.post('/save-data', async (req, res) => {
             TIMESTAMP,  
             NONCE,
             P_SIGN,
-            ECI
+            ECI,
+            TEXT
         } = req.body;
 
         const query = `
-            INSERT INTO test_table4 (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+            INSERT INTO test_table5 (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         `;
 
         const values = [
             TERMINAL, TRTYPE, ORDER, AMOUNT, CURRENCY, ACTION, RC, 
-            APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI
+            APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT
         ];
 
         await pool.query(query, values);
