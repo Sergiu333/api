@@ -172,6 +172,28 @@ app.get('/get-canceled-records', async (req, res) => {
     }
 });
 
+app.get('/filter-transactions', async (req, res) => {
+    try {
+        // Preluăm tipul de tranzacție din query string
+        const { type } = req.query;
+
+        // Construim interogarea dinamic pe baza filtrului
+        const query = type
+            ? `SELECT * FROM transaction WHERE TRTYPE = $1`
+            : `SELECT * FROM transaction`;
+
+        // Executăm interogarea cu sau fără parametri
+        const values = type ? [type] : [];
+        const result = await pool.query(query, values);
+
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Eroare la filtrarea tranzacțiilor:', error);
+        res.status(500).json({ message: 'Eroare la filtrarea tranzacțiilor.', error });
+    }
+});
+
+
 
 app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
