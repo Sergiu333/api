@@ -155,6 +155,23 @@ app.get('/get-active-records', async (req, res) => {
     }
 });
 
+app.get('/get-canceled-records', async (req, res) => {
+    try {
+        const query = `
+            SELECT * FROM transaction t1
+            WHERE t1.RC != '00' AND NOT EXISTS (
+                SELECT 1 FROM transaction t2
+                WHERE t2.RRN = t1.RRN AND t2.TRTYPE = '22'
+            )
+        `;
+        const result = await pool.query(query);
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Eroare la obținerea tranzacțiilor anulate:', error);
+        res.status(500).json({ message: 'Eroare la obținerea tranzacțiilor anulate.', error });
+    }
+});
+
 
 app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
