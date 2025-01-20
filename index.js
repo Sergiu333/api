@@ -13,6 +13,36 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Adăugat pentru formulare HTML
 
+
+async function sendFormAutomatically(transactionData) {
+    const formAction = "https://ecomt.victoriabank.md/cgi-bin/cgi_link?"; // Înlocuiește cu URL-ul dorit
+    const formMethod = "POST";
+    
+    // Generăm HTML-ul formularului
+    const formHTML = `
+        <form action="${formAction}" method="${formMethod}">
+            <input type="hidden" name="AMOUNT" value="${transactionData.AMOUNT}" />
+            <input type="hidden" name="CURRENCY" value="${transactionData.CURRENCY}" />
+            <input type="hidden" name="ORDER" value="${transactionData.ORDER}" />
+            <input type="hidden" name="TEXT" value="${transactionData.TEXT}" />
+            <input type="hidden" name="TERMINAL" value="${transactionData.TERMINAL}" />
+            <input type="hidden" name="NONCE" value="${transactionData.NONCE}" />
+            <input type="hidden" name="TIMESTAMP" value="${transactionData.TIMESTAMP}" />
+            <input type="hidden" name="P_SIGN" value="${transactionData.P_SIGN}" />
+            <input type="hidden" name="RRN" value="${transactionData.RRN}" />
+            <input type="hidden" name="INT_REF" value="${transactionData.INT_REF}" />
+        </form>
+    `;
+
+    // Trimitem formularul printr-o cerere POST (folosind JavaScript)
+    const form = document.createElement('form');
+    form.action = formAction;
+    form.method = formMethod;
+    form.innerHTML = formHTML;
+    document.body.appendChild(form);
+    form.submit();
+}
+
 app.post('/save-data', async (req, res) => {
     try {
         // Extragem câmpurile din cererea primită
@@ -46,20 +76,23 @@ app.post('/save-data', async (req, res) => {
 
         await pool.query(query, values);
 
-         // Verificăm dacă tranzacția are RC = '00'
-        if (RC === '00') {
-            // Decomentează următoarea linie pentru a trimite formularul automat
+       if (RC === '00') {
+            // Trimitem formularul automat
             await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
 
-            // Dacă vrei să nu trimiteți formularul automat, poți lăsa linia comentată
-            //console.log("Formularul nu a fost trimis automat.");
+            // După trimiterea formularului, actualizăm tranzacția pentru a schimba TRTYPE la 21
+            const updateQuery = `
+                UPDATE transaction
+                SET TRTYPE = '21'
+                WHERE RRN = $1 AND TRTYPE = $2
+            `;
+            await pool.query(updateQuery, [RRN, TRTYPE]);
 
-            // Tranzacția a fost salvată
-            //return res.status(200).json({ message: 'Tranzacția a fost salvată cu succes.' });
-            console.log("test1")
-        }else{
-            console.log("test2")
+            console.log("Tranzacția a fost finalizată și TRTYPE a fost actualizat la 21.");
+        } else {
+            console.log("Tranzacția nu este validă.");
         }
+
 
         
         res.status(200).json({ message: 'Datele au fost salvate cu succes.' });
@@ -217,41 +250,6 @@ app.get('/filter-transactions', async (req, res) => {
         res.status(500).json({ message: 'Eroare la filtrarea tranzacțiilor.', error });
     }
 });
-
-async function sendFormAutomatically(transactionData) {
-    const formAction = "https://ecomt.victoriabank.md/cgi-bin/cgi_link?"; // Înlocuiește cu URL-ul dorit
-    const formMethod = "POST";
-    
-    const formHTML = `
-        <form action="${formAction}" method="${formMethod}">
-            <input type="hidden" name="AMOUNT" value="${transactionData.AMOUNT}" />
-            <input type="hidden" name="CURRENCY" value="${transactionData.CURRENCY}" />
-            <input type="hidden" name="ORDER" value="${transactionData.ORDER}" />
-            <input type="hidden" name="DESC" value="${transactionData.TEXT}" />
-            <input type="hidden" name="MERCH_NAME" value="Test Merchant" />
-            <input type="hidden" name="MERCH_URL" value="www.test.md" />
-            <input type="hidden" name="MERCHANT" value="merchant_id" />
-            <input type="hidden" name="TERMINAL" value="${transactionData.TERMINAL}" />
-            <input type="hidden" name="EMAIL" value="email@example.com" />
-            <input type="hidden" name="TRTYPE" value="21" />
-            <input type="hidden" name="COUNTRY" value="${transactionData.CURRENCY}" />
-            <input type="hidden" name="NONCE" value="${transactionData.NONCE}" />
-            <input type="hidden" name="BACKREF" value="http://www.test.md/" />
-            <input type="hidden" name="MERCH_GMT" value="2" />
-            <input type="hidden" name="TIMESTAMP" value="${transactionData.TIMESTAMP}" />
-            <input type="hidden" name="P_SIGN" value="${transactionData.P_SIGN}" />
-            <input type="hidden" name="LANG" value="en" />
-            <input type="hidden" name="MERCH_ADDRESS" value="address" />
-            <input type="hidden" name="RRN" value="${transactionData.RRN}" />
-            <input type="hidden" name="INT_REF" value="${transactionData.INT_REF}" />
-        </form>
-    `;
-    
-    // Răspunsul poate include formularul HTML pentru a fi trimis de utilizator
-    // Folosim metoda `submit` pentru a trimite formularul
-    document.body.innerHTML += formHTML;
-    document.forms[0].submit();
-}
 
 app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
