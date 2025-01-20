@@ -45,6 +45,20 @@ app.post('/save-data', async (req, res) => {
         ];
 
         await pool.query(query, values);
+
+         // Verificăm dacă tranzacția are RC = '00'
+        if (RC === '00') {
+            // Decomentează următoarea linie pentru a trimite formularul automat
+            // await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
+
+            // Dacă vrei să nu trimiteți formularul automat, poți lăsa linia comentată
+            console.log("Formularul nu a fost trimis automat.");
+
+            // Tranzacția a fost salvată
+            return res.status(200).json({ message: 'Tranzacția a fost salvată cu succes.' });
+        }
+
+        
         res.status(200).json({ message: 'Datele au fost salvate cu succes.' });
     } catch (error) {
         console.error('Eroare la salvarea datelor:', error);
@@ -201,7 +215,40 @@ app.get('/filter-transactions', async (req, res) => {
     }
 });
 
-
+async function sendFormAutomatically(transactionData) {
+    const formAction = "url"; // Înlocuiește cu URL-ul dorit
+    const formMethod = "POST";
+    
+    const formHTML = `
+        <form action="${formAction}" method="${formMethod}">
+            <input type="hidden" name="AMOUNT" value="${transactionData.AMOUNT}" />
+            <input type="hidden" name="CURRENCY" value="${transactionData.CURRENCY}" />
+            <input type="hidden" name="ORDER" value="${transactionData.ORDER}" />
+            <input type="hidden" name="DESC" value="${transactionData.TEXT}" />
+            <input type="hidden" name="MERCH_NAME" value="Test Merchant" />
+            <input type="hidden" name="MERCH_URL" value="www.test.md" />
+            <input type="hidden" name="MERCHANT" value="merchant_id" />
+            <input type="hidden" name="TERMINAL" value="${transactionData.TERMINAL}" />
+            <input type="hidden" name="EMAIL" value="email@example.com" />
+            <input type="hidden" name="TRTYPE" value="21" />
+            <input type="hidden" name="COUNTRY" value="${transactionData.CURRENCY}" />
+            <input type="hidden" name="NONCE" value="${transactionData.NONCE}" />
+            <input type="hidden" name="BACKREF" value="http://www.test.md/" />
+            <input type="hidden" name="MERCH_GMT" value="2" />
+            <input type="hidden" name="TIMESTAMP" value="${transactionData.TIMESTAMP}" />
+            <input type="hidden" name="P_SIGN" value="${transactionData.P_SIGN}" />
+            <input type="hidden" name="LANG" value="en" />
+            <input type="hidden" name="MERCH_ADDRESS" value="address" />
+            <input type="hidden" name="RRN" value="${transactionData.RRN}" />
+            <input type="hidden" name="INT_REF" value="${transactionData.INT_REF}" />
+        </form>
+    `;
+    
+    // Răspunsul poate include formularul HTML pentru a fi trimis de utilizator
+    // Folosim metoda `submit` pentru a trimite formularul
+    document.body.innerHTML += formHTML;
+    document.forms[0].submit();
+}
 
 app.listen(PORT, () => {
     console.log(`Serverul rulează pe http://localhost:${PORT}`);
