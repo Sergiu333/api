@@ -85,6 +85,7 @@ app.post('/save-data', async (req, res) => {
 
             console.log("Tranzacția a fost finalizată și TRTYPE a fost actualizat la 21.");
         } else {
+           await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
             console.log("Tranzacția nu este validă.");
         }
 
