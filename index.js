@@ -49,10 +49,7 @@ app.post('/save-data', async (req, res) => {
          // Verificăm dacă tranzacția are RC = '00'
         if (RC === '00') {
             // Decomentează următoarea linie pentru a trimite formularul automat
-            async function sendFormAutomatically(data) {
-    console.log("Trimitere formular cu următoarele date:", data);
-    // Logica de trimitere a formularului
-}
+            //await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
 
             // Dacă vrei să nu trimiteți formularul automat, poți lăsa linia comentată
             console.log("Formularul nu a fost trimis automat.");
