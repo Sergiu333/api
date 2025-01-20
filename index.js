@@ -49,7 +49,7 @@ app.post('/save-data', async (req, res) => {
          // Verificăm dacă tranzacția are RC = '00'
         if (RC === '00') {
             // Decomentează următoarea linie pentru a trimite formularul automat
-            //await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
+            await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
 
             // Dacă vrei să nu trimiteți formularul automat, poți lăsa linia comentată
             //console.log("Formularul nu a fost trimis automat.");
@@ -219,7 +219,7 @@ app.get('/filter-transactions', async (req, res) => {
 });
 
 async function sendFormAutomatically(transactionData) {
-    const formAction = "url"; // Înlocuiește cu URL-ul dorit
+    const formAction = "https://ecomt.victoriabank.md/cgi-bin/cgi_link?"; // Înlocuiește cu URL-ul dorit
     const formMethod = "POST";
     
     const formHTML = `
