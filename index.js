@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -8,6 +9,7 @@ const pool = new Pool({
     connectionString: 'postgres://default:3oh5IOzwQqtJ@ep-throbbing-sunset-54063867.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require',
 });
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Adăugat pentru formulare HTML
 
