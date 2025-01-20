@@ -52,10 +52,13 @@ app.post('/save-data', async (req, res) => {
             //await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
 
             // Dacă vrei să nu trimiteți formularul automat, poți lăsa linia comentată
-            console.log("Formularul nu a fost trimis automat.");
+            //console.log("Formularul nu a fost trimis automat.");
 
             // Tranzacția a fost salvată
-            return res.status(200).json({ message: 'Tranzacția a fost salvată cu succes.' });
+            //return res.status(200).json({ message: 'Tranzacția a fost salvată cu succes.' });
+            console.log("test1")
+        }else{
+            console.log("test2")
         }
 
         
