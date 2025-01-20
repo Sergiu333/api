@@ -78,18 +78,6 @@ app.post('/save-data', async (req, res) => {
         ];
 
         await pool.query(query, values);
-
-       if (RC === '00') {
-            // Trimitem formularul automat
-            await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
-
-            console.log("Tranzacția a fost finalizată și TRTYPE a fost actualizat la 21.");
-        } else {
-           //await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
-            console.log("Tranzacția nu este validă.", res);
-        }
-
-
         
         res.status(200).json({ message: 'Datele au fost salvate cu succes.' });
     } catch (error) {
