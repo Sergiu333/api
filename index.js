@@ -41,6 +41,9 @@ async function sendFormAutomatically(transactionData) {
     form.innerHTML = formHTML;
     document.body.appendChild(form);
     form.submit();
+
+    console.log("test sergiu")
+    console.log(transactionData, "test321")
 }
 
 app.post('/save-data', async (req, res) => {
@@ -79,14 +82,6 @@ app.post('/save-data', async (req, res) => {
        if (RC === '00') {
             // Trimitem formularul automat
             await sendFormAutomatically({ AMOUNT, CURRENCY, ORDER, TEXT, TERMINAL, NONCE, TIMESTAMP, P_SIGN, RRN, INT_REF });
-
-            // După trimiterea formularului, actualizăm tranzacția pentru a schimba TRTYPE la 21
-            const updateQuery = `
-                UPDATE transaction
-                SET TRTYPE = '21'
-                WHERE RRN = $1 AND TRTYPE = $2
-            `;
-            await pool.query(updateQuery, [RRN, TRTYPE]);
 
             console.log("Tranzacția a fost finalizată și TRTYPE a fost actualizat la 21.");
         } else {
