@@ -78,6 +78,7 @@ app.post('/save-data', async (req, res) => {
         ];
 
         await pool.query(query, values);
+        console.log(values, "sergiu aici")
         
         res.status(200).json({ message: 'Datele au fost salvate cu succes.' });
     } catch (error) {
