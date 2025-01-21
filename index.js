@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const axios = require('axios');
 
 // Configurare conexiune PostgreSQL
 const pool = new Pool({
@@ -15,35 +16,26 @@ app.use(express.urlencoded({ extended: true })); // Adăugat pentru formulare HT
 
 
 async function sendFormAutomatically(transactionData) {
-    const formAction = "https://ecomt.victoriabank.md/cgi-bin/cgi_link?"; // Înlocuiește cu URL-ul dorit
-    const formMethod = "POST";
-    
-    // Generăm HTML-ul formularului
-    const formHTML = `
-        <form action="${formAction}" method="${formMethod}">
-            <input type="hidden" name="AMOUNT" value="${transactionData.AMOUNT}" />
-            <input type="hidden" name="CURRENCY" value="${transactionData.CURRENCY}" />
-            <input type="hidden" name="ORDER" value="${transactionData.ORDER}" />
-            <input type="hidden" name="TEXT" value="${transactionData.TEXT}" />
-            <input type="hidden" name="TERMINAL" value="${transactionData.TERMINAL}" />
-            <input type="hidden" name="NONCE" value="${transactionData.NONCE}" />
-            <input type="hidden" name="TIMESTAMP" value="${transactionData.TIMESTAMP}" />
-            <input type="hidden" name="P_SIGN" value="${transactionData.P_SIGN}" />
-            <input type="hidden" name="RRN" value="${transactionData.RRN}" />
-            <input type="hidden" name="INT_REF" value="${transactionData.INT_REF}" />
-        </form>
-    `;
+    const formAction = "https://ecomt.victoriabank.md/cgi-bin/cgi_link?";
 
-    // Trimitem formularul printr-o cerere POST (folosind JavaScript)
-    const form = document.createElement('form');
-    form.action = formAction;
-    form.method = formMethod;
-    form.innerHTML = formHTML;
-    document.body.appendChild(form);
-    form.submit();
+    try {
+        const response = await axios.post(formAction, {
+            AMOUNT: transactionData.AMOUNT,
+            CURRENCY: transactionData.CURRENCY,
+            ORDER: transactionData.ORDER,
+            TEXT: transactionData.TEXT,
+            TERMINAL: transactionData.TERMINAL,
+            NONCE: transactionData.NONCE,
+            TIMESTAMP: transactionData.TIMESTAMP,
+            P_SIGN: transactionData.P_SIGN,
+            RRN: transactionData.RRN,
+            INT_REF: transactionData.INT_REF,
+        });
 
-    console.log("test sergiu")
-    console.log(transactionData, "test321")
+        console.log("Formular trimis cu succes:", response.data);
+    } catch (error) {
+        console.error("Eroare la trimiterea formularului:", error.message);
+    }
 }
 
 app.post('/save-data', async (req, res) => {
