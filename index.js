@@ -93,13 +93,13 @@ app.post('/save-data', async (req, res) => {
         await pool.query(query, values);
         
 
-        console.log(`Value of RC: '${values[6]}'`);
-        if (values[6]?.trim() === '00') {
-            console.log("Intrăm în if, RC este exact '00'.");
-            sendFormAutomatically(values);
-        } else {
-            console.log("Nu intrăm în if. Valoarea RC este:", `'${values[6]}'`);
-        }
+        // console.log(`Value of RC: '${values[6]}'`);
+        // if (values[6]?.trim() === '00') {
+        //     console.log("Intrăm în if, RC este exact '00'.");
+        //     sendFormAutomatically(values);
+        // } else {
+        //     console.log("Nu intrăm în if. Valoarea RC este:", `'${values[6]}'`);
+        // }
 
 
         
