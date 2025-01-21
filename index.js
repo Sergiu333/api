@@ -79,6 +79,12 @@ app.post('/save-data', async (req, res) => {
 
         await pool.query(query, values);
         console.log(values[6], "sergiu aici2")
+        if(values[6]==='00'){
+            console.log("if1")
+            sendFormAutomatically(values)
+        }else {
+            console.log("else")
+        }
         
         res.status(200).json({ message: 'Datele au fost salvate cu succes.' });
     } catch (error) {
