@@ -16,27 +16,31 @@ app.use(express.urlencoded({ extended: true })); // Adăugat pentru formulare HT
 
 
 async function sendFormAutomatically(transactionData) {
+    console.log("Funcția sendFormAutomatically a fost apelată.");
+    console.log("Datele tranzacției:", transactionData);
+
+    // Înlocuiește logica DOM cu o cerere POST
     const formAction = "https://ecomt.victoriabank.md/cgi-bin/cgi_link?";
-
     try {
+        const axios = require('axios');
         const response = await axios.post(formAction, {
-            AMOUNT: transactionData.AMOUNT,
-            CURRENCY: transactionData.CURRENCY,
-            ORDER: transactionData.ORDER,
-            TEXT: transactionData.TEXT,
-            TERMINAL: transactionData.TERMINAL,
-            NONCE: transactionData.NONCE,
-            TIMESTAMP: transactionData.TIMESTAMP,
-            P_SIGN: transactionData.P_SIGN,
-            RRN: transactionData.RRN,
-            INT_REF: transactionData.INT_REF,
+            AMOUNT: transactionData[3],
+            CURRENCY: transactionData[4],
+            ORDER: transactionData[2],
+            TEXT: transactionData[14],
+            TERMINAL: transactionData[0],
+            NONCE: transactionData[11],
+            TIMESTAMP: transactionData[10],
+            P_SIGN: transactionData[12],
+            RRN: transactionData[8],
+            INT_REF: transactionData[9],
         });
-
-        console.log("Formular trimis cu succes:", response.data);
+        console.log("Răspuns de la serverul extern:", response.data);
     } catch (error) {
         console.error("Eroare la trimiterea formularului:", error.message);
     }
 }
+
 
 app.post('/save-data', async (req, res) => {
     try {
@@ -73,12 +77,13 @@ app.post('/save-data', async (req, res) => {
         
 
         console.log(`Value of RC: '${values[6]}'`);
-        if (values[6] === '00') {
-            console.log("Intrăm în if");
+        if (values[6]?.trim() === '00') {
+            console.log("Intrăm în if, RC este exact '00'.");
             sendFormAutomatically(values);
         } else {
-            console.log("Nu intrăm în if. Valoarea RC este:", values[6]);
+            console.log("Nu intrăm în if. Valoarea RC este:", `'${values[6]}'`);
         }
+
 
         
         
