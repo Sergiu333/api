@@ -19,27 +19,78 @@ async function sendFormAutomatically(transactionData) {
     console.log("Funcția sendFormAutomatically a fost apelată.");
     console.log("Datele tranzacției:", transactionData);
 
-    // Înlocuiește logica DOM cu o cerere POST
-    const formAction = "https://ecomt.victoriabank.md/cgi-bin/cgi_link?";
+    const url = "https://ecomt.victoriabank.md/cgi-bin/cgi_link?";
+    const trtype = 24; // Specificăm TRTYPE = 24 pentru acest caz.
+
+    // Generăm formularul dinamic
+    const formHTML = `
+        <form action="${url}" method="POST" target="_blank">
+            <input type="hidden" name="AMOUNT" value="${transactionData[3]}" />
+            <input type="hidden" name="CURRENCY" value="${transactionData[4]}" />
+            <input type="hidden" name="ORDER" value="${transactionData[2]}" />
+            <input type="hidden" name="DESC" value="Description here" />
+            <input type="hidden" name="MERCH_NAME" value="Merchant Name" />
+            <input type="hidden" name="MERCH_URL" value="www.test.md" />
+            <input type="hidden" name="MERCHANT" value="${transactionData[0]}" />
+            <input type="hidden" name="TERMINAL" value="${transactionData[0]}" />
+            <input type="hidden" name="EMAIL" value="example@test.com" />
+            <input type="hidden" name="TRTYPE" value="${trtype}" />
+            <input type="hidden" name="COUNTRY" value="${transactionData[4]}" />
+            <input type="hidden" name="NONCE" value="${transactionData[11]}" />
+            <input type="hidden" name="BACKREF" value="http://www.test.md/" />
+            <input type="hidden" name="MERCH_GMT" value="2" />
+            <input type="hidden" name="TIMESTAMP" value="${transactionData[10]}" />
+            <input type="hidden" name="P_SIGN" value="${transactionData[12]}" />
+            <input type="hidden" name="LANG" value="en" />
+            <input type="hidden" name="MERCH_ADDRESS" value="Merchant Address" />
+            <input type="hidden" name="RRN" value="${transactionData[8]}" />
+            <input type="hidden" name="INT_REF" value="${transactionData[9]}" />
+        </form>
+    `;
+
     try {
+        // Aceasta este logica pentru trimiterea directă a formularului
+        const { JSDOM } = require("jsdom");
+        const dom = new JSDOM(`<!DOCTYPE html><html><body></body></html>`);
+        const form = dom.window.document.createElement("form");
+        form.innerHTML = formHTML;
+
+        console.log("Formularul este gata de trimis:", form.innerHTML);
+
+        // Într-un browser, ai folosi `document.body.appendChild(form); form.submit();`
+        // În Node.js, acest lucru nu este funcțional. Poți folosi un request POST (ex. axios/fetch).
+
         const axios = require('axios');
-        const response = await axios.post(formAction, {
+        const formData = {
             AMOUNT: transactionData[3],
             CURRENCY: transactionData[4],
             ORDER: transactionData[2],
-            TEXT: transactionData[14],
+            DESC: "Description here",
+            MERCH_NAME: "Merchant Name",
+            MERCH_URL: "www.test.md",
+            MERCHANT: transactionData[0],
             TERMINAL: transactionData[0],
+            EMAIL: "example@test.com",
+            TRTYPE: trtype,
+            COUNTRY: transactionData[4],
             NONCE: transactionData[11],
+            BACKREF: "http://www.test.md/",
+            MERCH_GMT: "2",
             TIMESTAMP: transactionData[10],
             P_SIGN: transactionData[12],
+            LANG: "en",
+            MERCH_ADDRESS: "Merchant Address",
             RRN: transactionData[8],
             INT_REF: transactionData[9],
-        });
-        console.log("Răspuns de la serverul extern:", response.data);
+        };
+
+        const response = await axios.post(url, formData);
+        console.log("Răspuns de la server:", response.data);
     } catch (error) {
         console.error("Eroare la trimiterea formularului:", error.message);
     }
 }
+
 
 
 app.post('/save-data', async (req, res) => {
