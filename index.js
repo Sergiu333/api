@@ -31,7 +31,7 @@ async function sendFormAutomatically(transactionData) {
         MERCH_URL: "www.test.md",
         MERCHANT: transactionData[0],
         TERMINAL: transactionData[0],
-        EMAIL: "example@test.com",
+        EMAIL: "examples@test.com",
         TRTYPE: trtype,
         COUNTRY: transactionData[4],
         NONCE: transactionData[11],
@@ -61,6 +61,8 @@ async function sendFormAutomatically(transactionData) {
 
 app.post('/save-data', async (req, res) => {
     try {
+        console.log(req, 'cosole.log111')
+
         // Extragem câmpurile din cererea primită
         const {
             TERMINAL,
@@ -77,17 +79,20 @@ app.post('/save-data', async (req, res) => {
             NONCE,
             P_SIGN,
             ECI,
-            TEXT
+            TEXT,
+            EMAIL
         } = req.body;
 
+        console.log(req, 'cosole.log222')
+
         const query = `
-            INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+            INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT, EMAIL)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
         `;
 
         const values = [
             TERMINAL, TRTYPE, ORDER, AMOUNT, CURRENCY, ACTION, RC, 
-            APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT
+            APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT, EMAIL
         ];
 
         await pool.query(query, values);
