@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const axios = require('axios');
+const crypto = require('crypto');
 
 // Configurare conexiune PostgreSQL
 const pool = new Pool({
