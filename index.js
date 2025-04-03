@@ -59,15 +59,72 @@ async function sendFormAutomatically(transactionData) {
 }
 
 
+// app.post('/save-data', async (req, res) => {
+//     try {
+//         console.log(req, 'cosole.log111')
+//
+//         // Extragem câmpurile din cererea primită
+//         const {
+//             TERMINAL,
+//             TRTYPE,
+//             ORDER,
+//             AMOUNT,
+//             CURRENCY,
+//             ACTION,
+//             RC,
+//             APPROVAL,
+//             RRN,
+//             INT_REF,
+//             TIMESTAMP,
+//             NONCE,
+//             P_SIGN,
+//             ECI,
+//             TEXT,
+//             EMAIL
+//         } = req.body;
+//
+//         console.log(req, 'cosole.log222')
+//
+//         const query = `
+//             INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT, EMAIL)
+//             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+//         `;
+//
+//         const values = [
+//             TERMINAL, TRTYPE, ORDER, AMOUNT, CURRENCY, ACTION, RC,
+//             APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT, EMAIL
+//         ];
+//
+//         await pool.query(query, values);
+//
+//
+//         // console.log(`Value of RC: '${values[6]}'`);
+//         // if (values[6]?.trim() === '00') {
+//         //     console.log("Intrăm în if, RC este exact '00'.");
+//         //     sendFormAutomatically(values);
+//         // } else {
+//         //     console.log("Nu intrăm în if. Valoarea RC este:", `'${values[6]}'`);
+//         // }
+//
+//
+//
+//
+//         res.status(200).json({ message: 'Datele au fost salvate cu succes.' });
+//     } catch (error) {
+//         console.error('Eroare la salvarea datelor:', error);
+//         res.status(500).json({ message: 'Eroare la salvarea datelor.', error });
+//     }
+// });
+
 app.post('/save-data', async (req, res) => {
     try {
-        console.log(req, 'cosole.log111')
+        console.log(req.body, 'cosole.log111');
 
         // Extragem câmpurile din cererea primită
         const {
             TERMINAL,
             TRTYPE,
-            ORDER,  
+            ORDER,
             AMOUNT,
             CURRENCY,
             ACTION,
@@ -75,7 +132,7 @@ app.post('/save-data', async (req, res) => {
             APPROVAL,
             RRN,
             INT_REF,
-            TIMESTAMP,  
+            TIMESTAMP,
             NONCE,
             P_SIGN,
             ECI,
@@ -83,7 +140,7 @@ app.post('/save-data', async (req, res) => {
             EMAIL
         } = req.body;
 
-        console.log(req, 'cosole.log222')
+        console.log(req.body, 'cosole.log222');
 
         const query = `
             INSERT INTO transaction (TERMINAL, TRTYPE, "ORDER", AMOUNT, CURRENCY, ACTION, RC, APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT, EMAIL)
@@ -91,25 +148,50 @@ app.post('/save-data', async (req, res) => {
         `;
 
         const values = [
-            TERMINAL, TRTYPE, ORDER, AMOUNT, CURRENCY, ACTION, RC, 
+            TERMINAL, TRTYPE, ORDER, AMOUNT, CURRENCY, ACTION, RC,
             APPROVAL, RRN, INT_REF, TIMESTAMP, NONCE, P_SIGN, ECI, TEXT, EMAIL
         ];
 
         await pool.query(query, values);
-        
 
-        // console.log(`Value of RC: '${values[6]}'`);
-        // if (values[6]?.trim() === '00') {
-        //     console.log("Intrăm în if, RC este exact '00'.");
-        //     sendFormAutomatically(values);
-        // } else {
-        //     console.log("Nu intrăm în if. Valoarea RC este:", `'${values[6]}'`);
-        // }
+        // **Dacă TRTYPE este 0, se trimite automat o nouă cerere cu TRTYPE 21**
+        if (TRTYPE === '0') {
+            try {
+                console.log("TRTYPE este 0, trimit cerere cu TRTYPE 21...");
 
+                const newTrType = '21';
+                const newNonce = crypto.randomBytes(16).toString('hex'); // Generăm un nonce nou
+                const newTimestamp = new Date().toISOString().replace(/[-:.TZ]/g, ''); // Format timestamp YYMMDDhhmmss
 
-        
-        
+                // Generăm semnătura P_SIGN
+                const p_sign_data = `${ORDER.length}${ORDER}${newNonce.length}${newNonce}${newTimestamp.length}${newTimestamp}${newTrType.length}${newTrType}${AMOUNT.length}${AMOUNT}`;
+                const secretKey = "0652cb0fb1ba45044d549641dcf0172067ed45e844bcb2bc"; // Cheia privată HEX
+                const p_sign = crypto.createHmac('sha256', Buffer.from(secretKey, 'hex')).update(p_sign_data).digest('hex');
+
+                // Construim payload-ul pentru request
+                const payload = new URLSearchParams();
+                payload.append('TERMINAL', TERMINAL);
+                payload.append('TRTYPE', newTrType);
+                payload.append('ORDER', ORDER);
+                payload.append('AMOUNT', AMOUNT);
+                payload.append('CURRENCY', CURRENCY);
+                payload.append('TIMESTAMP', newTimestamp);
+                payload.append('NONCE', newNonce);
+                payload.append('P_SIGN', p_sign);
+
+                // Trimitem request către bancă
+                const response = await axios.post('https://ecomt.victoriabank.md/cgi-bin/cgi_link?', payload.toString(), {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+
+                console.log('Răspuns de la bancă:', response.data);
+            } catch (err) {
+                console.error('Eroare la trimiterea către bancă:', err);
+            }
+        }
+
         res.status(200).json({ message: 'Datele au fost salvate cu succes.' });
+
     } catch (error) {
         console.error('Eroare la salvarea datelor:', error);
         res.status(500).json({ message: 'Eroare la salvarea datelor.', error });
