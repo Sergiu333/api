@@ -1,15 +1,18 @@
-//const { Pool } = require('pg');
-//const express = require('express');
-//const cors = require('cors');
-//const app = express();
-// const PORT = process.env.PORT || 3000;
+const { Pool } = require('pg');
+const express = require('express');
+const cors = require('cors');
+const app = express();
+const PORT = process.env.PORT || 3000;
 const axios = require('axios');
 const crypto = require('crypto');
 
 // Configurare conexiune PostgreSQL
 const pool = new Pool({
-    connectionString: 'postgres://default:3oh5IOzwQqtJ@ep-throbbing-sunset-54063867.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require',
+    //postgres://neondb_owner:npg_mHs2fpj5AhND@ep-red-bush-a2el9wq3-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require
+    connectionString: 'postgres://neondb_owner:npg_mHs2fpj5AhND@ep-red-bush-a2el9wq3-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require',
 });
+
+//postgres://default:3oh5IOzwQqtJ@ep-throbbing-sunset-54063867.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require
 
 app.use(cors());
 app.use(express.json());
